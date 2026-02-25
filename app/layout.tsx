@@ -22,11 +22,26 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: 'Smooth Blur Generator',
-  description: 'Create and tweak progressive blur effects and box shadows. Export as HTML/CSS or Tailwind code.',
+  description: 'Create and tweak progressive blur effects for you images . Export as HTML/CSS or Tailwind code.',
+  metadataBase: new URL('https://smooth-blur-seven.vercel.app/ '),
   openGraph: {
     title: 'Smooth Blur Generator',
-    description: 'Create and tweak progressive blur effects and box shadows. Export as HTML/CSS or Tailwind code.',
+    description: 'Create and tweak progressive blur effects for your images. Export as HTML/CSS or Tailwind code.',
     type: 'website',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Smooth Blur Generator',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Smooth Blur Generator',
+    description: 'Create and tweak progressive blur effects for your images. Export as HTML/CSS or Tailwind code.',
+    images: ['/og-image.png'],
   },
 };
 
