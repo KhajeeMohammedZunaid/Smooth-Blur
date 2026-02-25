@@ -23,7 +23,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: 'Smooth Blur Generator',
   description: 'Create and tweak progressive blur effects for you images . Export as HTML/CSS or Tailwind code.',
-  metadataBase: new URL('https://smooth-blur-seven.vercel.app/ '),
+  metadataBase: new URL('https://smooth-blur-seven.vercel.app'),
   openGraph: {
     title: 'Smooth Blur Generator',
     description: 'Create and tweak progressive blur effects for your images. Export as HTML/CSS or Tailwind code.',
