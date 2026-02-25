@@ -54,9 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SileoToaster />
         </ThemeProvider>
       </body>
-      {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
-      )}
+      <GoogleAnalytics gaId="G-GQ9YRPJXRC" />
     </html>
   );
 }
