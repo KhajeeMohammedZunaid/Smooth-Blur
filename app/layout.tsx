@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter_Tight } from 'next/font/google';
 import { ThemeProvider } from 'next-themes';
-import { Toaster } from '@/components/ui/sonner';
+import { GoogleAnalytics } from '@next/third-parties/google';
+import { SileoToaster } from '@/components/sileo-toaster';
 import './globals.css';
 
 const interTight = Inter_Tight({
@@ -35,9 +36,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-sans antialiased" suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
-          <Toaster richColors position="bottom-center" />
+          <SileoToaster />
         </ThemeProvider>
       </body>
+      {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+      )}
     </html>
   );
 }
