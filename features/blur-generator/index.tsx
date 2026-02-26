@@ -106,6 +106,7 @@ export default function BlurGenerator() {
   const [isMobile,       setIsMobile]       = useState(false);
   const [isSidebarOpen,  setIsSidebarOpen]  = useState(true);
   const [imageLoaded,    setImageLoaded]    = useState(false);
+  const [uploadCount,    setUploadCount]    = useState(0);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -269,9 +270,30 @@ export default function BlurGenerator() {
     setImageLoaded(false);
     const reader = new FileReader();
     reader.onload = async () => {
-      const dataUrl = reader.result as string;
-      setCustomImage(dataUrl);
-      await saveImageToDB(dataUrl);
+      const raw = reader.result as string;
+      const imgEl = new window.Image();
+      imgEl.onload = async () => {
+        const MAX = 1600;
+        const { naturalWidth: w, naturalHeight: h } = imgEl;
+        // Skip resize if already within limits — store directly, no quality loss
+        if (w <= MAX && h <= MAX) {
+          setUploadCount(c => c + 1);
+          setCustomImage(raw);
+          await saveImageToDB(raw);
+          return;
+        }
+        const ratio = Math.min(MAX / w, MAX / h);
+        const canvas = document.createElement('canvas');
+        canvas.width  = Math.round(w * ratio);
+        canvas.height = Math.round(h * ratio);
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(imgEl, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+        setUploadCount(c => c + 1);
+        setCustomImage(dataUrl);
+        await saveImageToDB(dataUrl);
+      };
+      imgEl.src = raw;
     };
     reader.readAsDataURL(file);
   }, []);
@@ -306,7 +328,7 @@ export default function BlurGenerator() {
     </div>
   );
 
-  const imgKey = customImage ? 'custom' : `seed-${photoSeed}`;
+  const imgKey = customImage ? `custom-${uploadCount}` : `seed-${photoSeed}`;
   const previewImage = (
     <AnimatePresence mode="sync">
       <motion.div
@@ -324,6 +346,12 @@ export default function BlurGenerator() {
             alt="Custom blur effect preview"
             className="absolute inset-0 w-full h-full object-cover border-0"
             onLoad={() => setImageLoaded(true)}
+            onError={() => setImageLoaded(true)}
+            ref={(el) => {
+              // Image already decoded (e.g. restored from IndexedDB) — wait one
+              // animation frame so framer-motion can initialise before we flip opacity
+              if (el?.complete) requestAnimationFrame(() => setImageLoaded(true));
+            }}
           />
         ) : (
           <Image
